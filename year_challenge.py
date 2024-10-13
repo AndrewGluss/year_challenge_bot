@@ -91,6 +91,33 @@ class YearChallenge:
             return True
         return False
 
+    def getLeap(self):
+        return self.__isLeap()
+
+    def getListMoney(self):
+        return ','.join([str(i) for i in self._listMoney])
+
+    def getAddedMoney(self):
+        return ','.join([str(i) for i in self._addedMoney])
+
+    def getNeedMoney(self):
+        if len(self._needTransfer) > 0:
+            return ','.join([str(i[1]) for i in self._needTransfer])
+
+    def getStartAmount(self):
+        return self._startAmount
+
+    def getEndAmount(self):
+        return self._endAmount
+
+    def getDateTransfer(self):
+        if self._dateTransfer is None:
+            return date(1970, 1, 1).strftime('%Y-%m-%d')
+        return self._dateTransfer.strftime('%Y-%m-%d')
+
+    def getInitiateDate(self):
+        return self._initialDate.strftime('%Y-%m-%d')
+
 if __name__ == "__main__":
     x = YearChallenge()
     print(x.__dict__)
