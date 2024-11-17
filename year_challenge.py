@@ -1,31 +1,28 @@
 import random
-from datetime import date, timedelta, datetime
-from functools import singledispatchmethod
-
+from datetime import date, datetime
 
 class YearChallenge:
-    @singledispatchmethod
-    def __init__(self):
-        self._leap = self.__isLeap() # признак високосного года
-        self._listMoney = [i for i in range(1, 366 + self._leap)]  # список сумм для перевода
-        self._addedMoney = [0] * len(self._listMoney)  # список переведенных сумм
-        self._needTransfer = [] # сумму требующие перевода
-        self._startAmount = 0  # количество денег в копилке
-        self._endAmount = sum(self._listMoney)  # количество денег в копилке по окончании годового челленджа
-        self._initialDate = datetime.today()
-        self._dateTransfer = None# дата последнего перевода
-
-    # Перегружаем конструктор для инициализации экземпляра класса YearChallenge через запись из БД
-    @__init__.register(tuple)
-    def _from_tuple(self, tuple_user):
-        self._leap = tuple_user[2]
-        self._listMoney = [i for i in range(1, 366 + self._leap)]
-        self._addedMoney = [int(i) for i in tuple_user[4].split(',')]
-        self._needTransfer = []  # необходимо определить формать записи сумм которые необходимо перевести на годовой челледж
-        self._startAmount = 0
-        self._endAmount = sum(self._listMoney)
-        self._initialDate = datetime.strptime(tuple_user[8], '%Y-%m-%d')
-        self._dateTransfer = datetime.strptime(tuple_user[9], '%Y-%m-%d')
+    def __init__(self, args=None):
+        if args is None:
+            self._leap = self.__isLeap() # признак високосного года
+            self._listMoney = [i for i in range(1, 366 + self._leap)]  # список сумм для перевода
+            self._addedMoney = [0] * len(self._listMoney)  # список переведенных сумм
+            self._needTransfer = [] # сумму требующие перевода
+            self._startAmount = 0  # количество денег в копилке
+            self._endAmount = sum(self._listMoney)  # количество денег в копилке по окончании годового челленджа
+            self._initialDate = datetime.today()
+            self._dateTransfer = None# дата последнего перевода
+        elif isinstance(args, tuple):
+            self._leap = args[2]
+            self._listMoney = [i for i in range(1, 366 + self._leap)]
+            self._addedMoney = [int(i) for i in args[4].split(',')]
+            self._needTransfer = []
+            self._startAmount = 0
+            self._endAmount = sum(self._listMoney)
+            self._initialDate = datetime.strptime(args[7], '%Y-%m-%d')
+            self._dateTransfer = datetime.strptime(args[8], '%Y-%m-%d')
+        else:
+            raise TypeError("Неподдерживаемый тип")
 
     def moneyTranser(self):
         """
